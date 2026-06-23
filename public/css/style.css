@@ -1,0 +1,77 @@
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    
+}
+.container1{  
+    
+    margin:0px 50px 0px 50px !important;
+    flex-grow: 1;
+}
+.navbar{
+    height: 5rem;
+    /* border-bottom:0.1rem solid grey; */
+    background-color: white;
+}
+.fa-compass{
+    color: #ff385c;
+    font-size: 2rem;
+}
+.nav-link{
+    color: #222222 !important;
+}
+
+.f-info{
+    height: 8 rems;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.f-info-links a{
+    text-decoration: none;
+    color: #222222;
+}
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+.f-info-socials i{
+    opacity: 70%;
+    font-size: 1.1rem;
+}
+.f-info-socials i:hover{
+    opacity: 100%;
+}
+/* card */
+.card{
+    padding: 0px !important;
+    height: 25rem;
+    margin-bottom: 1rem;
+    border-width: 0px !important;
+}
+.card-img-top{
+    height: 20rem;
+    border-radius: 1rem;
+}
+.row a{
+    text-decoration: none;
+}
+.card-img-top:hover{
+    opacity: 90%;
+}
+.info-btn{
+    display: flex;
+    flex-direction: row;
+    
+}
+.info-btn a{
+    color: white;
+}
+.info-btn button{
+    margin-right: 10px;
+}
+
+.info-body{
+    font-size: larger;
+}

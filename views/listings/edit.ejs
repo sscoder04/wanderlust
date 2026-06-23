@@ -1,0 +1,41 @@
+<% layout("../layouts/boilerplate") -%>
+<body>
+    <div class="row">
+    <div class="col-6 offset-3">
+    <form method="post" action="/listings?_method=PUT" novalidate>
+        <h1>Edit Your Listing</h1>
+        <input type="hidden" name="_id" class="form-control" value="<%= data._id %>" readonly>
+       <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input class="form-control" name="title"  value="<%= data.title %>">
+       </div>
+       <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" name="description" ><%= data.description %></textarea>
+       </div>
+       <div class="row">
+            <div class=" col-9 mb-3">
+                    <label for="img.url" class="form-label">Image</label>
+                    <input class="form-control" type="url" name="img.url" value="<%= data.img.url %>" placeholder="enter image URL">
+            </div>
+            <div class=" col-3 mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input class="form-control" type="number" name="price" value="<%= data.price %>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input class="form-control" name="location" value="<%= data.location %>">
+            </div>
+            <div class=" col mb-3">
+                    <label for="country" class="form-label">Country</label>
+                    <input class="form-control" name="country" value="<%= data.country %>">
+            </div>
+        </div>
+        <br>       
+        <button type="submit" class="btn btn-danger">make changes</button>
+    </form>
+    </div>
+    </div>  
+</body>
