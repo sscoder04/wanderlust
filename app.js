@@ -7,6 +7,7 @@ const methodoverride=require("method-override");
 const ejsMate=require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync");
 const ExpressError=require("./utils/ExpressError");
+const {listingSchema}=require("./validation")
 
 app.engine("ejs",ejsMate);
 
@@ -33,6 +34,15 @@ app.listen(8080,()=>{
     console.log("port is listening");
 });
 
+//validation middleware
+const validateSchema=(req,res,next)=>{
+    let{error}=listingSchema.validate(req.body);
+    if(error){
+        throw new ExpressError(400,error);
+    }else{
+        next();
+    }
+}
 app.get("/listings",wrapAsync(async (req,res,next)=>{
     let data=await Listing.find()
 
@@ -43,10 +53,8 @@ app.get("/listings/new",(req,res)=>{
     res.render("new.ejs");
     
 })
-app.post("/listings",wrapAsync(async(req,res,next)=>{
-   let data=req.body;
-   const doc= new Listing(data);
-   console.log(data);
+app.post("/listings",validateSchema,wrapAsync(async(req,res,next)=>{
+   const doc= new Listing(req.body);
    await doc.save();
    res.redirect("/listings");
 }))
@@ -72,7 +80,7 @@ app.get("/listings/:id/edit",wrapAsync(async(req,res,next)=>{
 
     res.render("edit",{data});
 }))
-app.put("/listings",wrapAsync(async (req,res,next)=>{
+app.put("/listings",validateSchema,wrapAsync(async (req,res,next)=>{
     let id=req.body._id;
     const update=req.body;
     let response=await Listing.replaceOne({_id:id},update,{
@@ -84,7 +92,7 @@ app.put("/listings",wrapAsync(async (req,res,next)=>{
     res.redirect(`/listings/${id}`);
 }))
 
-// error handling;
+// this is error handling
 app.use((err,req,res,next)=>{
     let{status=500,message="something went wrong"}=err;
     res.render("error",{err});
