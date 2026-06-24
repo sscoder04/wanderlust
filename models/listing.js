@@ -1,7 +1,7 @@
 const mongoose=require("mongoose");
 const {Schema}=mongoose;
 const Review=require("./review");
-// const { ref } = require("joi");
+
 async function main() {
     await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
 }
@@ -24,9 +24,10 @@ const listingSchema= new mongoose.Schema({
         url:{
             type:String,
             default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYcqsWcjnaHmF0s6uWWkuuJKPfT13YDDOG-f16vsJlhKdVmBaLJKTjpKTq&s=10",
-            set:v=>{
-                return v===""?"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYcqsWcjnaHmF0s6uWWkuuJKPfT13YDDOG-f16vsJlhKdVmBaLJKTjpKTq&s=10":v
-            }
+            set: v =>
+                v === "" || v === undefined
+                    ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYcqsWcjnaHmF0s6uWWkuuJKPfT13YDDOG-f16vsJlhKdVmBaLJKTjpKTq&s=10"
+                        : v
         }
     },
     price:{

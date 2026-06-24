@@ -2,9 +2,8 @@
 <body>
     <div class="row">
     <div class="col-6 offset-3">
-    <form method="post" action="/listings?_method=PUT" novalidate>
+    <form method="post" action="/listings/<%= data._id %>?_method=PUT" novalidate>
         <h1>Edit Your Listing</h1>
-        <input type="hidden" name="_id" class="form-control" value="<%= data._id %>" readonly>
        <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input class="form-control" name="title"  value="<%= data.title %>">
@@ -15,8 +14,8 @@
        </div>
        <div class="row">
             <div class=" col-9 mb-3">
-                    <label for="img.url" class="form-label">Image</label>
-                    <input class="form-control" type="url" name="img.url" value="<%= data.img.url %>" placeholder="enter image URL">
+                    <label for="img[url]" class="form-label">Image</label>
+                    <input class="form-control" type="string" name="img[url]" value="<%= data.img.url %>" placeholder="enter image URL">
             </div>
             <div class=" col-3 mb-3">
                     <label for="price" class="form-label">Price</label>
