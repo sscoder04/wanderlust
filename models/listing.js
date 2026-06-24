@@ -1,4 +1,17 @@
 const mongoose=require("mongoose");
+const {Schema}=mongoose;
+const Review=require("./review");
+// const { ref } = require("joi");
+async function main() {
+    await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
+}
+
+main().
+then(()=>{
+    console.log("connection completed")
+}).catch(err=>{
+    console.log(err);
+})
 
 const listingSchema= new mongoose.Schema({
     title:{
@@ -27,18 +40,24 @@ const listingSchema= new mongoose.Schema({
     country:{
         type:String,
         required:true,
-    }
+    },
+    review:[{
+        type:Schema.Types.ObjectId,
+        ref:"Review",
+    }]
 })
-async function main() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
-}
+//post/pre middleware(the pre middle ware should be 
+// defined before using moongose.model())
+listingSchema.post("findOneAndDelete",async (listing)=>{
+    if(listing){
+        let {review}=listing;
+        console.log(review);
+        let res=await Review.deleteMany({_id:{$in:review}});
+        console.log(res);
+    } 
 
-main().
-then(()=>{
-    console.log("connection completed")
-}).catch(err=>{
-    console.log(err);
 })
+
 
 const Listing=mongoose.model("Listing",listingSchema);
 module.exports={Listing};

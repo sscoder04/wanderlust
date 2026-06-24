@@ -21,7 +21,10 @@ body{
 .nav-link{
     color: #222222 !important;
 }
-
+/* footer */
+footer{
+    background-color: #eae1e1;
+}
 .f-info{
     height: 8 rems;
     display: flex;
@@ -44,11 +47,11 @@ body{
     opacity: 100%;
 }
 /* card */
-.card{
+.listing-card{
     padding: 0px !important;
     height: 25rem;
     margin-bottom: 1rem;
-    border-width: 0px !important;
+    border: none !important;
 }
 .card-img-top{
     height: 20rem;
