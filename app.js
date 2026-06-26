@@ -4,10 +4,17 @@ const path=require("path");
 const app=express();
 const methodoverride=require("method-override");
 const ejsMate=require("ejs-mate");
-const listing=require("./routes/listing");
-const review=require("./routes/review")
+const listingRouter=require("./routes/listing");
+const reviewRouter=require("./routes/review")
+const userRouter=require("./routes/user");
 const session=require("express-session");
 const flash=require("connect-flash");
+const User=require("./models/user");
+const passport=require("passport");
+const LocalStrategy=require("passport-local");
+
+
+
 
 async function main() {
     await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
@@ -18,6 +25,7 @@ then(()=>{
 }).catch(err=>{
     console.log(err);
 })
+
 app.engine("ejs",ejsMate);
 app.use(methodoverride("_method"));
 app.set("views",path.join(__dirname,"views/listings"));
@@ -36,15 +44,36 @@ const sessionOptions={
 app.use(session(sessionOptions));
 app.use(flash()); 
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));//deafult set the name of the startegy to "local" but we can give our own name
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.use((req,res,next)=>{
     res.locals.success=req.flash("success");
     res.locals.error=req.flash("error");
+    res.locals.currUser=req.user;
     next();
 })
 
-app.use("/listings",listing);
-app.use("/listings/:id/reviews",review);
+app.get("/demoUser",async (req,res)=>{
+    const fakeUser=new User({
+        email:"moni@gmail.com",
+        username:"moni"
+    })
+
+    let response= await User.register(fakeUser,"password");
+    res.send(response);
+})
+
+
+app.use("/listings",listingRouter);
+app.use("/listings/:id/reviews",reviewRouter);
+app.use("/",userRouter);
+
 
 app.listen(8080,()=>{
     console.log("port is listening");

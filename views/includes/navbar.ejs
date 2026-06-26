@@ -15,7 +15,23 @@
         <li class="nav-item">
           <a class="nav-link" href="/listings/new">new</a>
         </li>
-        
+      </ul>
+    </div>
+    <div class="collapse navbar-collapse text-end ms-auto" id="n-login-options" id="navbarNav">
+      <ul class="navbar-nav">
+        <% if(!currUser){ %>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="/signup"><button class=" btn btn-outline-danger">sign up</button></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/login"><button class=" btn btn-outline-dark">log in</button></a>
+        </li>
+        <% } %>
+        <% if(currUser){ %>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout"><button class=" btn btn-outline-danger">log out</button></a>
+        </li>
+        <% } %>
       </ul>
     </div>
   </div>

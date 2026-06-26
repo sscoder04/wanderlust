@@ -6,7 +6,7 @@ const ExpressError=require("../utils/ExpressError");
 const {listingSchema}=require("../validation");
 const {Listing}=require("../models/listing");
 const {reviewSchema}=require("../validation");
-
+const {isLoggedin}=require("../middleware");
 
 const validateSchema=(req,res,next)=>{
     let{error}=listingSchema.validate(req.body);
@@ -24,12 +24,12 @@ router.get("/",wrapAsync(async (req,res,next)=>{
 }))
 
 //new route
-router.get("/new",(req,res)=>{
+router.get("/new",isLoggedin,(req,res)=>{
     res.render("new.ejs");
     
 })
 
-router.post("/",validateSchema,wrapAsync(async(req,res,next)=>{
+router.post("/",isLoggedin,validateSchema,wrapAsync(async(req,res,next)=>{
    const doc= new Listing(req.body);
    await doc.save();
    req.flash("success","new listing added successfully!");
@@ -37,7 +37,9 @@ router.post("/",validateSchema,wrapAsync(async(req,res,next)=>{
 }))
 
 //delete route;
-router.delete("/",wrapAsync(async (req,res,next)=>{
+router.delete("/",
+    isLoggedin,
+    wrapAsync(async (req,res,next)=>{
     let id=req.body._id;
     await Listing.findByIdAndDelete(id);
     req.flash("success","listing deleted successfully!");
@@ -45,7 +47,8 @@ router.delete("/",wrapAsync(async (req,res,next)=>{
 }))
 
 //show route//
-router.get("/:id",wrapAsync(async (req,res,next)=>{
+router.get("/:id",
+    wrapAsync(async (req,res,next)=>{
     let {id}=req.params;
     let data=await Listing.findById(id).populate("review")
     if(!data){
@@ -56,7 +59,9 @@ router.get("/:id",wrapAsync(async (req,res,next)=>{
 }))
 
 //edit route
-router.get("/:id/edit",wrapAsync(async(req,res,next)=>{
+router.get("/:id/edit",
+    isLoggedin,
+    wrapAsync(async(req,res,next)=>{
     let {id}=req.params;
     let data= await Listing.findById(id)
     if(!data){
@@ -67,7 +72,9 @@ router.get("/:id/edit",wrapAsync(async(req,res,next)=>{
     res.render("edit",{data});
 }))
 
-router.put("/:id",validateSchema,wrapAsync(async (req,res,next)=>{
+router.put("/:id",
+    isLoggedin,
+    validateSchema,wrapAsync(async (req,res,next)=>{
     let {id}=req.params;
     const update=req.body;
     let response=await Listing.replaceOne({_id:id},update,{
