@@ -9,7 +9,6 @@ const {reviewSchema}=require("../validation");
 
 
 const validateSchema=(req,res,next)=>{
-    console.log(req.body);
     let{error}=listingSchema.validate(req.body);
     if(error){
         throw new ExpressError(400,error);
@@ -32,8 +31,8 @@ router.get("/new",(req,res)=>{
 
 router.post("/",validateSchema,wrapAsync(async(req,res,next)=>{
    const doc= new Listing(req.body);
-   console.log(doc.img.url);
    await doc.save();
+   req.flash("success","new listing added successfully!");
    res.redirect("/listings");
 }))
 
@@ -41,6 +40,7 @@ router.post("/",validateSchema,wrapAsync(async(req,res,next)=>{
 router.delete("/",wrapAsync(async (req,res,next)=>{
     let id=req.body._id;
     await Listing.findByIdAndDelete(id);
+    req.flash("success","listing deleted successfully!");
     res.redirect("/listings");
 }))
 
@@ -70,7 +70,7 @@ router.put("/:id",validateSchema,wrapAsync(async (req,res,next)=>{
         new:true,
         runValidators:true,
     });
-       
+    req.flash("success","listing updated successfully!");   
     console.log("matchedCount: ",response.matchedCount);
     res.redirect(`/listings/${id}`);
 }));

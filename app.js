@@ -1,23 +1,20 @@
 const express=require("express");
 const mongoose=require("mongoose");
-const {Listing}=require("./models/listing");
 const path=require("path");
 const app=express();
 const methodoverride=require("method-override");
 const ejsMate=require("ejs-mate");
-const wrapAsync = require("./utils/wrapAsync");
-const ExpressError=require("./utils/ExpressError");
-const {reviewSchema}=require("./validation");
-const Review=require("./models/review");
 const listing=require("./routes/listing");
 const review=require("./routes/review")
+const session=require("express-session");
+const flash=require("connect-flash");
 
 async function main() {
     await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
 }
 main().
 then(()=>{
-    console.log("connection completed")
+    console.log("connected to DB")
 }).catch(err=>{
     console.log(err);
 })
@@ -30,9 +27,23 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname,"public")));
 
 
+
+const sessionOptions={
+    secret:"mySecret",
+    resave:false,
+    saveUninitialized:true,
+}
+app.use(session(sessionOptions));
+app.use(flash()); 
+
+
+app.use((req,res,next)=>{
+    res.locals.success=req.flash("success");
+    next();
+})
+
 app.use("/listings",listing);
 app.use("/listings/:id/reviews",review);
-
 
 app.listen(8080,()=>{
     console.log("port is listening");
