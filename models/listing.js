@@ -42,6 +42,10 @@ const listingSchema= new mongoose.Schema({
     owner:{
         type:Schema.Types.ObjectId,
         ref:"User",
+    },
+    category:{
+        type:String,
+        enum:["trending","mountains","beaches","snow","iconic cities","countryside","skiing"],
     }
 })
 //post/pre middleware(the pre middle ware should be 

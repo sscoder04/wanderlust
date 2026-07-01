@@ -1,9 +1,63 @@
 
 <% layout("../layouts/boilerplate") -%>
-<body>
 
-    <h1>ALL LISTINGS</h1>
-    
+<body >
+    <style>
+        #filters{
+            display:flex;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+            margin-top:1rem !important;
+        }
+        #filter{
+            opacity: 0.6;
+            text-align: center;
+            margin-right: 2rem;
+        }
+        #filter:hover{
+            opacity: 1;
+        }
+        a{
+            color: #222222;
+            text-decoration: none;
+        }
+    </style>
+    <div id="filters" >
+        <a href="/listings?category=trending"><div id="filter">
+            <div><i class="fa-solid fa-fire"></i></div>
+            <p>trending</p>
+        </div></a>
+
+        <a href="/listings?category=beaches"><div id="filter">
+            <div><i class="fa-solid fa-umbrella-beach"></i></div>
+            <p>beaches</p>
+        </div></a>
+
+        <a href="/listings?category=snow"><div id="filter">
+            <div><i class="fa-solid fa-snowflake"></i></div>
+            <p>snow</p>
+        </div></a>
+
+        <a href="/listings?category=mountains"><div id="filter">
+            <div><i class="fa-solid fa-mountain"></i></div>
+            <p>mountains</p>
+        </div></a>
+
+        <a href="/listings?category=iconic cities"><div id="filter">
+            <div><i class="fa-solid fa-mountain-city"></i></div>
+            <p>iconic cities</p>
+        </div></a>
+
+        <a href="/listings?category=countryside"><div id="filter">
+            <div><i class="fa-solid fa-tractor"></i></div>
+            <p>countryside</p>
+        </div></a>
+
+        <a href="/listings?category=skiing"><div id="filter">
+            <div><i class="fa-solid fa-person-skiing"></i></i></div>
+            <p>skiing</p>
+        </div></a>
+    </div>
     <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 ">
     <% for(let listing of data){ %>
         <a href="/listings/<%= listing._id %>">

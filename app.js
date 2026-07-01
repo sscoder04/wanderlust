@@ -14,7 +14,7 @@ const flash=require("connect-flash");
 const User=require("./models/user");
 const passport=require("passport");
 const LocalStrategy=require("passport-local");
-
+const {categories}=require("./init/categories");
 
 
 
@@ -59,6 +59,7 @@ app.use((req,res,next)=>{
     res.locals.success=req.flash("success");
     res.locals.error=req.flash("error");
     res.locals.currUser=req.user;
+    res.locals.categories=categories;
     next();
 })
 

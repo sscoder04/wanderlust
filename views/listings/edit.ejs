@@ -12,6 +12,15 @@
             <label for="description" class="form-label">Description</label>
             <textarea class="form-control" name="description" ><%= data.description %></textarea>
        </div>
+       <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" name="category"  aria-label="select category">
+                <option selected><%= data.category %></option>
+                <% for(let i=1;i<=categories.length;i++){ %>
+                    <option value="<%= categories[i]  %>"><%= categories[i] %></option>
+                <% } %>
+            </select>
+        </div>
        <div class="row">
             <div class=" col-9 mb-3">
                      <p>original image</p>
@@ -37,7 +46,7 @@
             </div>
         </div>
         <br>       
-        <button type="submit" class="btn btn-danger">make changes</button>
+        <button type="submit" class="btn btn-danger mb-3">make changes</button>
     </form>
     </div>
     </div>  

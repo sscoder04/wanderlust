@@ -24,6 +24,15 @@
             <div class="invalid-feedback">this field is required</div>
         </div>
         <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" name="category"  aria-label="mountains">
+                <option selected>select category</option>
+                <% for(let i=0;i<=categories.length;i++){ %>
+                    <option value="<%= categories[i] %>"><%= categories[i] %></option>
+                <% } %>
+            </select>
+        </div>
+        <div class="mb-3">
             <!-- <label for="img[url]" class="form-label">Image</label>
             <input  name="img[url]" placeholder="image link" class="form-control"> -->
             <label for="img" class="form-label">Image</label>
@@ -55,7 +64,7 @@
             <div class="invalid-feedback">please enter a vallid country</div>
         </div>
         <br>
-        <button class="btn btn-danger">submit</button>
+        <button class="btn btn-danger mb-3">submit</button>
     </form>
     </div>
     </div>

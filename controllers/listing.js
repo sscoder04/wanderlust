@@ -1,10 +1,21 @@
 const {Listing}=require("../models/listing");
-
+const {categories}=require("../init/categories");
 
 module.exports.index=async (req,res,next)=>{
-    let data=await Listing.find()
+    let {category}=req.query;
+    let present= categories.includes(category);
 
+    if(!category){
+        let data=await Listing.find();
+         return res.render("allListings",{data});
+    }else if(!present){
+        req.flash("error","category doesnt exist")
+        return res.redirect("/listings")
+    }
+
+    let data=await Listing.find({category:category});
     res.render("allListings",{data});
+   
 }
 
 module.exports.renderNewForm=(req,res)=>{
@@ -59,7 +70,7 @@ module.exports.renderEditform=async(req,res,next)=>{
 module.exports.updateListing=async (req,res,next)=>{
     let {id}=req.params;
     req.body.owner=req.user._id;
-    console.log(req.file);
+    console.log(req.body);
     let listing= await Listing.findByIdAndUpdate(id,{...req.body},{returnDocument:"after"});
     if(typeof req.file !="undefined"){
         let url=req.file.path;
