@@ -10,35 +10,20 @@ const {Listing}=require("../models/listing");
 const {listingSchema}=require("../validation");
 const{validateReview, isLoggedin}=require("../middleware");
 const {isReviewOwner}=require("../middleware");
-//validation middleware
+const reviewController=require("../controllers/review");
 
 
 
 //post request
 router.post("/",validateReview,
     isLoggedin,
-    wrapAsync(async(req,res)=>{
-    let {id}=req.params;//listings id
-   let listing= await Listing.findById(id);
-   let newReview=new Review(req.body);
-   newReview.author= req.user._id;//user's ID;
-   listing.review.push(newReview);
+    wrapAsync(reviewController.postReview));
 
-   await newReview.save();
-   await listing.save();
-    res.redirect(`/listings/${id}`);
-}))
-
-//DElETE review
+//destroy review
 router.delete("/:reviewId",
     isLoggedin,
     isReviewOwner,
-    wrapAsync(async(req,res)=>{
-    let{id,reviewId}=req.params;
-    await Listing.updateOne({_id:id},{$pull:{review:reviewId}});
-    await Review.findByIdAndDelete({_id:reviewId});
-    req.flash("success","listing Deleted successfully!")
-    res.redirect(`/listings/${id}`);
-}))
+    wrapAsync(reviewController.destroyReview));
 
+    
 module.exports=router;

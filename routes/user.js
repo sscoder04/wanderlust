@@ -4,60 +4,24 @@ const User=require("../models/user");
 const passport=require("passport");
 const LocalStrategy=require("passport-local");
 const {saveRedirectUrl}=require("../middleware");
+const userController=require("../controllers/user");
 //signup
-router.get("/signup",(req,res)=>{
-    res.render("../user/Signup");
-})
+router.get("/signup",userController.renderSignupForm);
 
-router.post("/signup",async (req,res)=>{
-    try{
-         let{username,email,password}=req.body;
-    const newUser=new User({
-           email:email,
-           username:username
-       })
-       let registered=await User.register(newUser,password);
-       req.login(registered,(err)=>{
-            if(err){
-                return next(err);
-            }
-            req.flash("success","sign-up successfull!");
-            return res.redirect("/listings");
-       })
-      
-    }catch(err){
-        req.flash("error",err.message);
-        return res.redirect("/signup")
-    }
-   
-})
+router.post("/signup",userController.postSignup);
 
 //log-in
-router.get("/login",(req,res)=>{
-    res.render("../user/login")
-})
+router.get("/login",userController.renderLoginForm);
+
 router.post("/login",
     saveRedirectUrl,
     passport.authenticate("local",{
     failureFlash:true,
     failureRedirect:"/login"
-}),async(req,res)=>{
-    let{username}=req.body;
-    req.flash("success",`Welocome ${username}`);
-    let redirectUrl=res.locals.redirectUrl || "/listings"
-    return res.redirect(redirectUrl);
-})
+}),userController.postLogin);
 
 //logout
-router.get("/logout",(req,res)=>{
-    req.logout(err=>{
-        if(err){
-            return next(err);
-        }
-        req.flash("success","Logged out successfully");
-        res.redirect("/listings");
-    })
-})
+router.get("/logout",userController.logout);
 
 
 
