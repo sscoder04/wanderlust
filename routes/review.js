@@ -8,36 +8,36 @@ const methodoverride=require("method-override");
 const mongoose=require("mongoose");
 const {Listing}=require("../models/listing");
 const {listingSchema}=require("../validation");
+const{validateReview, isLoggedin}=require("../middleware");
+const {isReviewOwner}=require("../middleware");
 //validation middleware
 
-const validateReview=(req,res,next)=>{
-    let{error}=reviewSchema.validate(req.body);
-    if(error){
-        throw new ExpressError(400,error);
-    }else{
-        next();
-    }
-}
+
 
 //post request
-router.post("/",validateReview,wrapAsync(async(req,res)=>{
-    let {id}=req.params;
+router.post("/",validateReview,
+    isLoggedin,
+    wrapAsync(async(req,res)=>{
+    let {id}=req.params;//listings id
    let listing= await Listing.findById(id);
-   let new_review=new Review(req.body);
-   listing.review.push(new_review);
+   let newReview=new Review(req.body);
+   newReview.author= req.user._id;//user's ID;
+   listing.review.push(newReview);
 
-   await new_review.save();
+   await newReview.save();
    await listing.save();
-   
     res.redirect(`/listings/${id}`);
 }))
 
 //DElETE review
-router.delete("/:reviewId",wrapAsync(async(req,res)=>{
+router.delete("/:reviewId",
+    isLoggedin,
+    isReviewOwner,
+    wrapAsync(async(req,res)=>{
     let{id,reviewId}=req.params;
     await Listing.updateOne({_id:id},{$pull:{review:reviewId}});
     await Review.findByIdAndDelete({_id:reviewId});
-
+    req.flash("success","listing Deleted successfully!")
     res.redirect(`/listings/${id}`);
 }))
 

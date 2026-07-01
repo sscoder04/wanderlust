@@ -7,7 +7,7 @@ const userSchema=new Schema({
         type:String,
         required:true,
     }
-    //passportlocal by default a username and password field;
+    //passportlocal sets default a username and password field;
 })
 
 

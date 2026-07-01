@@ -59,16 +59,6 @@ app.use((req,res,next)=>{
     next();
 })
 
-app.get("/demoUser",async (req,res)=>{
-    const fakeUser=new User({
-        email:"moni@gmail.com",
-        username:"moni"
-    })
-
-    let response= await User.register(fakeUser,"password");
-    res.send(response);
-})
-
 
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
@@ -83,6 +73,7 @@ app.listen(8080,()=>{
 // this is error handling
 app.use((err,req,res,next)=>{
     let{status=500,message="something went wrong"}=err;
+    console.log(err);
     res.render("error",{err});
 })
 

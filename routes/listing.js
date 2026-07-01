@@ -4,18 +4,14 @@ const mongoose=require("mongoose");
 const wrapAsync = require("../utils/wrapAsync");
 const ExpressError=require("../utils/ExpressError");
 const {listingSchema}=require("../validation");
-const {Listing}=require("../models/listing");
 const {reviewSchema}=require("../validation");
+const {Listing}=require("../models/listing");
+const User=require("../models/user");
 const {isLoggedin}=require("../middleware");
+const {ownerAuthorisaton}=require("../middleware");
+const{validateSchema}=require("../middleware");
 
-const validateSchema=(req,res,next)=>{
-    let{error}=listingSchema.validate(req.body);
-    if(error){
-        throw new ExpressError(400,error);
-    }else{
-        next();
-    }
-}
+
 
 router.get("/",wrapAsync(async (req,res,next)=>{
     let data=await Listing.find()
@@ -30,17 +26,19 @@ router.get("/new",isLoggedin,(req,res)=>{
 })
 
 router.post("/",isLoggedin,validateSchema,wrapAsync(async(req,res,next)=>{
-   const doc= new Listing(req.body);
+    req.body.owner=req.user._id;
+    const doc= new Listing(req.body);
    await doc.save();
    req.flash("success","new listing added successfully!");
    res.redirect("/listings");
 }))
 
 //delete route;
-router.delete("/",
+router.delete("/:id",
     isLoggedin,
+    ownerAuthorisaton,
     wrapAsync(async (req,res,next)=>{
-    let id=req.body._id;
+    let {id}=req.params;
     await Listing.findByIdAndDelete(id);
     req.flash("success","listing deleted successfully!");
     res.redirect("/listings");
@@ -50,32 +48,40 @@ router.delete("/",
 router.get("/:id",
     wrapAsync(async (req,res,next)=>{
     let {id}=req.params;
-    let data=await Listing.findById(id).populate("review")
+    let data=await Listing.findById(id).populate({path:"review",
+        populate:{
+            path:"author",
+        }
+    }).populate("owner");
     if(!data){
         req.flash("error","listing does not exist");
         return res.redirect("/listings");
     }
+
     res.render("info",{data})
 }))
 
 //edit route
 router.get("/:id/edit",
     isLoggedin,
+    ownerAuthorisaton,
     wrapAsync(async(req,res,next)=>{
     let {id}=req.params;
-    let data= await Listing.findById(id)
+    let data= await Listing.findById(id).populate("review").populate("owner");
     if(!data){
         req.flash("error","listing does not exist");
         return res.redirect("/listings");
     }
-    
+   
     res.render("edit",{data});
 }))
 
 router.put("/:id",
     isLoggedin,
+    ownerAuthorisaton,
     validateSchema,wrapAsync(async (req,res,next)=>{
     let {id}=req.params;
+    req.body.owner=req.user._id;
     const update=req.body;
     let response=await Listing.replaceOne({_id:id},update,{
         new:true,

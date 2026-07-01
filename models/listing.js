@@ -1,6 +1,7 @@
 const mongoose=require("mongoose");
 const {Schema}=mongoose;
 const Review=require("./review");
+const User=require("./user");
 
 async function main() {
     await mongoose.connect('mongodb://127.0.0.1:27017/wanderlust');
@@ -42,7 +43,11 @@ const listingSchema= new mongoose.Schema({
     review:[{
         type:Schema.Types.ObjectId,
         ref:"Review",
-    }]
+    }],
+    owner:{
+        type:Schema.Types.ObjectId,
+        ref:"User",
+    }
 })
 //post/pre middleware(the pre middle ware should be 
 // defined before using moongose.model())
