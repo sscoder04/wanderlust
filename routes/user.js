@@ -5,22 +5,25 @@ const passport=require("passport");
 const LocalStrategy=require("passport-local");
 const {saveRedirectUrl}=require("../middleware");
 const userController=require("../controllers/user");
-//signup
-router.get("/signup",userController.renderSignupForm);
 
-router.post("/signup",userController.postSignup);
 
-//log-in
-router.get("/login",userController.renderLoginForm);
+router
+    .route("/signup")
+    .get(userController.renderSignupForm)
+    .post(userController.postSignup);
+ 
 
-router.post("/login",
-    saveRedirectUrl,
+
+router
+    .route("/login")
+    .get(userController.renderLoginForm)
+    .post(saveRedirectUrl,
     passport.authenticate("local",{
     failureFlash:true,
     failureRedirect:"/login"
 }),userController.postLogin);
 
-//logout
+
 router.get("/logout",userController.logout);
 
 

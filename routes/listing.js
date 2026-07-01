@@ -12,36 +12,41 @@ const {isLoggedin}=require("../middleware");
 const {ownerAuthorisaton}=require("../middleware");
 const{validateSchema}=require("../middleware");
 const listingController=require("../controllers/listing");
+const multer  = require('multer')
+
+const {cloudinary,storage}=require("../cloudinary");
+
+const upload = multer({ storage })
+router
+    .route("/")
+    .get(wrapAsync(listingController.index))
+    .post(isLoggedin,
+        upload.single("img"),
+        validateSchema,
+    wrapAsync(listingController.postNewListing));
+    
 
 
-router.get("/",wrapAsync(listingController.index));
-
-//new route
 router.get("/new",isLoggedin,listingController.renderNewForm);
 
-router.post("/",isLoggedin,validateSchema,
-    wrapAsync(listingController.postNewListing));
-
-//destroy route;
-router.delete("/:id",
+router
+    .route("/:id")
+    .get(wrapAsync(listingController.renderListingInfo))
+    .put(
+    isLoggedin,
+    ownerAuthorisaton,
+    upload.single("img"),
+    validateSchema,wrapAsync(listingController.updateListing))
+    .delete(
     isLoggedin,
     ownerAuthorisaton,
     wrapAsync(listingController.destroyListing));
-
-//show route
-router.get("/:id",wrapAsync(listingController.renderListingInfo));
 
 //edit route
 router.get("/:id/edit",
     isLoggedin,
     ownerAuthorisaton,
     wrapAsync(listingController.renderEditform));
-
-router.put("/:id",
-    isLoggedin,
-    ownerAuthorisaton,
-    validateSchema,wrapAsync(listingController.updateListing));
-
 
     
 module.exports=router;

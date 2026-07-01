@@ -21,11 +21,6 @@ const listingSchema= new mongoose.Schema({
         filename:String,
         url:{
             type:String,
-            default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYcqsWcjnaHmF0s6uWWkuuJKPfT13YDDOG-f16vsJlhKdVmBaLJKTjpKTq&s=10",
-            set: v =>
-                v === "" || v === undefined
-                    ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYcqsWcjnaHmF0s6uWWkuuJKPfT13YDDOG-f16vsJlhKdVmBaLJKTjpKTq&s=10"
-                        : v
         }
     },
     price:{
